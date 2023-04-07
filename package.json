@@ -1,0 +1,13 @@
+{
+  "name": "recap-ts",
+  "version": "0.0.1",
+  "description": "A Typescript implementation of EIP-5573 utilities",
+  "main": "index.js",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.2"
+  },
+  "dependencies": {
+    "multiformats": "^11.0.2"
+  }
+}
