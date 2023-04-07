@@ -22,6 +22,30 @@ export class Recap {
         return this.#att;
     }
 
+    get statement(): string {
+        const att = orderObject(this.attenuations);
+        let statement = "I further authorize the stated URI to perform the following actions on my behalf: ";
+
+        let section = 1;
+        for (const [resource, abilities] of Object.entries(att)) {
+            const resourceAbilities = Object.keys(abilities).reduce((acc, cur) => {
+                const [namespace, name] = cur.split('/');
+                if (acc[namespace] === undefined) {
+                    acc[namespace] = [name];
+                } else {
+                    acc[namespace].push(name);
+                }
+                return acc;
+            }, {}) as { [key: string]: Array<string> };
+            for (const [namespace, names] of Object.entries(resourceAbilities)) {
+                statement += `(${section}) "${namespace}": ${names.map((n: string) => '"' + n + '"').join(', ')} for "${resource}". `;
+                section += 1;
+            }
+        }
+
+        return statement
+    }
+
     addProof(cid: string | CID) {
         if (typeof cid === 'string') {
             this.#prf.push(CID.parse(cid))
@@ -102,17 +126,20 @@ const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => {
     return { att, prf: prf.map((cid: string) => CID.parse(cid)) }
 }
 
-const isSorted = (obj: PlainJSON) => {
+const isSorted = (obj: PlainJSON): boolean => {
     if (obj instanceof Array) {
+        // its an array
         return obj.every(isSorted)
     } else if (obj instanceof Object) {
+        // its an object
         return Object.keys(obj) === Object.keys(obj).sort() && Object.values(obj).every(isSorted)
     } else {
-        true
+        // its a primitive
+        return true
     }
 }
 
-const orderObject = (obj: PlainJSON) =>
+const orderObject = (obj: PlainJSON): PlainJSON =>
     Object.keys(obj).sort().reduce((sorted, key) => {
         const value = obj[key];
         sorted[key] = value instanceof Array ? value.map(orderObject)
