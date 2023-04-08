@@ -2,7 +2,7 @@ import { base58btc } from 'multiformats/bases/base58';
 import { base64url } from 'multiformats/bases/base64';
 import { CID } from 'multiformats/cid';
 
-export type PlainJSON = boolean | number | string | { [key: string]: PlainJSON } | { [key: number]: PlainJSON } | Array<PlainJSON>;
+export type PlainJSON = boolean | number | string | { [key: string]: PlainJSON } | Array<PlainJSON>;
 export type AttObj = { [key: string]: { [key: string]: Array<PlainJSON> } };
 
 const stringRegex = /^[a-zA-Z0-9.*_+-]$/g;
@@ -55,10 +55,19 @@ export const isSorted = (obj: PlainJSON): boolean => {
     }
 }
 
-export const orderObject = (obj: PlainJSON): PlainJSON =>
-    Object.keys(obj).sort().reduce((sorted, key) => {
-        const value = obj[key];
-        sorted[key] = value instanceof Array ? value.map(orderObject)
-            : value instanceof Object ? orderObject(value) : obj[key];
-        return sorted
-    }, {})
+export const orderObject = (obj: PlainJSON): PlainJSON => {
+    if (obj instanceof Array) {
+        // its an array
+        return obj.map(orderObject)
+    } else if (obj instanceof Object) {
+        // its an object
+        return Object.keys(obj).sort().reduce((sorted, key) => {
+            sorted[key] = orderObject(obj[key]);
+            return sorted;
+        }, {} as { [key: string]: PlainJSON })
+
+    } else {
+        // its a primitive
+        return obj
+    }
+}

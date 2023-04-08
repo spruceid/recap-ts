@@ -42,7 +42,8 @@ export class Recap {
                     acc[namespace].push(name);
                 }
                 return acc;
-            }, {}) as { [key: string]: Array<string> };
+            }, {} as { [key: string]: Array<string> });
+
             for (const [namespace, names] of Object.entries(resourceAbilities)) {
                 statement += `(${section}) "${namespace}": ${names.map(n => '"' + n + '"').join(', ')} for "${resource}". `;
                 section += 1;
