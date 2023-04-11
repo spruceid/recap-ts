@@ -63,10 +63,10 @@ export class Recap {
 
     addAttenuation(resource: string, namespace: string = '*', name: string = '*', restriction?: PlainJSON) {
         if (!validString(namespace) || namespace === '*') {
-            throw new Error('Invalid namespace');
+            throw new Error('Invalid ability namespace');
         }
         if (!validString(name)) {
-            throw new Error('Invalid name');
+            throw new Error('Invalid ability name');
         }
 
         const abString = `${namespace}/${name}`;
