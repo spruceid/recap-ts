@@ -61,7 +61,7 @@ export class Recap {
         }
     }
 
-    addAttenuation(resource: string, namespace: string = '*', name: string = '*', restriction?: PlainJSON) {
+    addAttenuation(resource: string, namespace: string = '*', name: string = '*', restriction: PlainJSON = {}) {
         if (!validString(namespace) || namespace === '*') {
             throw new Error('Invalid ability namespace');
         }
@@ -73,11 +73,9 @@ export class Recap {
         const ex = this.#att[resource];
 
         if (ex !== undefined) {
-            if (restriction !== undefined) {
-                ex[abString].push(restriction);
-            }
+            ex[abString].push(restriction);
         } else {
-            this.#att[resource] = { [abString]: restriction ? [restriction] : [] };
+            this.#att[resource] = { [abString]: [restriction] };
         }
     }
 
