@@ -24,6 +24,7 @@
     "typescript": "^5.0.2"
   },
   "dependencies": {
-    "multiformats": "^11.0.2"
+    "multiformats": "^11.0.2",
+    "canonicalize": "^2.0.0"
   }
 }

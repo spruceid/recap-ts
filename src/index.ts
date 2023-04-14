@@ -29,12 +29,11 @@ export class Recap {
     }
 
     get statement(): string {
-        const att = orderObject(this.attenuations);
         let statement = "I further authorize the stated URI to perform the following actions on my behalf: ";
 
         let section = 1;
-        for (const [resource, abilities] of Object.entries(att)) {
-            const resourceAbilities = Object.keys(abilities).reduce((acc, cur) => {
+        for (const resource of Object.keys(this.attenuations).sort()) {
+            const resourceAbilities = Object.keys(this.attenuations[resource]).sort().reduce((acc, cur) => {
                 const [namespace, name] = cur.split('/');
                 if (acc[namespace] === undefined) {
                     acc[namespace] = [name];
