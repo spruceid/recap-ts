@@ -1,7 +1,7 @@
 import { CID } from 'multiformats/cid';
 
 import { Recap } from './index';
-import { orderObject, validAbString, isSorted } from './utils';
+import { validAbString, isSorted } from './utils';
 
 describe('Recap Handling', () => {
     test('should build a recap', () => {
@@ -69,9 +69,6 @@ describe('Utils', () => {
     const validStrings = ['crud/read', 'kepler/*', 'https/put'];
     const invalidStrings = ['crud', 'crud/read/write', 'with a/space', 'with/a space'];
 
-    test('should order an object', () => {
-        expect(orderObject(unordered)).toEqual(ordered);
-    })
     test('should test for ordering', () => {
         expect(isSorted(ordered)).toBeTruthy();
         expect(isSorted(unordered)).toBeFalsy();

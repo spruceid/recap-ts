@@ -28,10 +28,20 @@ export const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => 
         throw new Error('Invalid attenuation object');
     }
     // check the prf is a list
-    if (!Array.isArray(prf) || prf.some(cid => !(cid instanceof String))) {
+    if (!Array.isArray(prf) || prf.some(cid => typeof cid !== 'string')) {
         throw new Error('Invalid proof list');
     }
 
+    checkAtt(att);
+
+    if (!isSorted(att)) {
+        throw new Error('Attenuation object is not properly sorted');
+    }
+
+    return { att, prf: prf.map((cid: string) => CID.parse(cid)) }
+}
+
+export const checkAtt = (att: AttObj): att is AttObj => {
     // TODO ensure the att keys are valid URIs
     // because URIs are so broad, there's no easy/efficient way to do this
     for (const ob of Object.values(att)) {
@@ -50,12 +60,7 @@ export const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => 
             }
         }
     }
-
-    if (!isSorted(att)) {
-        throw new Error('Attenuation object is not properly sorted');
-    }
-
-    return { att, prf: prf.map((cid: string) => CID.parse(cid)) }
+    return true
 }
 
 export const isSorted = (obj: PlainJSON): boolean => {

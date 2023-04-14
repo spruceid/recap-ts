@@ -4,7 +4,8 @@ import {
     PlainJSON,
     encodeRecap,
     decodeRecap,
-    validString
+    validString,
+    checkAtt
 } from './utils';
 
 export { AttObj, PlainJSON, CID };
@@ -14,9 +15,10 @@ export class Recap {
     #prf: Array<CID>;
     #att: AttObj;
 
-    constructor(att: AttObj = {}, prf: Array<CID> = []) {
-        this.#prf = prf;
+    constructor(att: AttObj = {}, prf: Array<CID> | Array<string> = []) {
+        checkAtt(att);
         this.#att = att;
+        this.#prf = prf.map(cid => typeof cid === 'string' ? CID.parse(cid) : cid);
     }
 
     get proofs(): Array<CID> {
