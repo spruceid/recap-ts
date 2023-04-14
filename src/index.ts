@@ -2,7 +2,6 @@ import { CID } from 'multiformats/cid';
 import {
     AttObj,
     PlainJSON,
-    orderObject,
     encodeRecap,
     decodeRecap,
     validString
@@ -61,7 +60,7 @@ export class Recap {
     }
 
     addAttenuation(resource: string, namespace: string = '*', name: string = '*', restriction: PlainJSON = {}) {
-        if (!validString(namespace) || namespace === '*') {
+        if (!validString(namespace)) {
             throw new Error('Invalid ability namespace');
         }
         if (!validString(name)) {
