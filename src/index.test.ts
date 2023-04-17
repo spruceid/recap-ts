@@ -1,7 +1,12 @@
 import { CID } from 'multiformats/cid';
+import { SiweMessage } from 'siwe';
 
 import { Recap } from './index';
 import { validAbString, isSorted } from './utils';
+
+const jsonCap = require('../test/serialized_cap.json');
+const valid = require('../test/valid.json');
+const invalid = require('../test/invalid.json');
 
 describe('Recap Handling', () => {
     test('should build a recap', () => {
@@ -29,22 +34,27 @@ describe('Recap Handling', () => {
         recap.addProof(cidStr);
         expect(recap.proofs).toEqual([cid]);
     });
-    test('should encode properly', () => {
-        const encoded = '';
-        const recap = new Recap();
-
-    });
     test('should decode properly', () => {
-        const encoded = '';
-        const recap = Recap.decode(encoded);
+        // @ts-ignore
+        for (const { message, recap } of Object.values(valid).map(
+            ({ message, recap: { att, prf } }) =>
+            ({
+                message: new SiweMessage(message),
+                recap: { att, prf: prf.map(CID.decode) }
+            }))
+        ) {
+            let decoded;
+            expect(() => decoded = Recap.extract_and_verify(message)).not.toThrow();
+            expect(decoded.attenuations).toEqual(recap.att);
+            // @ts-ignore
+            let proofs = recap.prf.map(CID.decode);
+            expect(decoded.proofs).toEqual(proofs);
+        }
+        // @ts-ignore
+        for (const { message } of Object.values(invalid)) {
+            expect(() => Recap.extract_and_verify(message)).toThrow();
+        }
     })
-    test('should roundtrip', () => {
-        const encoded = [''];
-        encoded.map(e => {
-            const recap = Recap.decode(e);
-            expect(recap.encode()).toEqual(e);
-        })
-    });
 })
 
 describe('Utils', () => {
