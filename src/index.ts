@@ -7,6 +7,7 @@ import {
     validString,
     checkAtt
 } from './utils';
+import { SiweMessage } from 'siwe';
 
 export { AttObj, PlainJSON, CID };
 const urnRecapPrefix = 'urn:recap:';
@@ -83,13 +84,35 @@ export class Recap {
         }
     }
 
-    static decode(recap: string): Recap {
+    static decode_urn(recap: string): Recap {
         if (!recap.startsWith(urnRecapPrefix)) {
             throw new Error('Invalid recap urn');
         }
 
         const { att, prf } = decodeRecap(recap.slice(urnRecapPrefix.length));
         return new Recap(att, prf)
+    }
+
+    static extract(siwe: SiweMessage): Recap {
+        if (siwe.resources === undefined) {
+            throw new Error('No resources in SiweMessage');
+        }
+        let last_index = siwe.resources.length - 1;
+        return Recap.decode_urn(siwe.resources[last_index])
+    }
+
+    static extract_and_verify(siwe: SiweMessage): Recap {
+        const recap = Recap.extract(siwe);
+        if (siwe.statement === undefined || !siwe.statement.endsWith(recap.statement)) {
+            throw new Error('Invalid statement');
+        }
+        return recap
+    }
+
+    add_to_siwe_message(siwe: SiweMessage): SiweMessage {
+        siwe.statement = siwe.statement === undefined ? this.statement : siwe.statement + " " + this.statement;
+        siwe.resources = siwe.resources === undefined ? [this.encode()] : [...siwe.resources, this.encode()];
+        return siwe
     }
 
     encode(): string {

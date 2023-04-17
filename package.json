@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "multiformats": "^11.0.2",
-    "canonicalize": "^2.0.0"
+    "canonicalize": "^2.0.0",
+    "siwe": "^2.0.5"
   }
 }
