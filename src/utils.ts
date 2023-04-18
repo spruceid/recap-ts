@@ -69,7 +69,8 @@ export const isSorted = (obj: PlainJSON): boolean => {
         return obj.every(isSorted)
     } else if (obj instanceof Object) {
         // its an object
-        return Object.keys(obj) === Object.keys(obj).sort() && Object.values(obj).every(isSorted)
+        const keys = Object.keys(obj);
+        return Object.keys(obj).sort().every((v, i) => v === keys[i]) && Object.values(obj).every(isSorted)
     } else {
         // its a primitive
         return true
