@@ -2,7 +2,7 @@ import { CID } from 'multiformats/cid';
 import { SiweMessage } from 'siwe';
 
 import { Recap } from './index';
-import { validAbString, isSorted } from './utils';
+import { validAbString, isSorted, validString } from './utils';
 
 const jsonCap = require('../test/serialized_cap.json');
 const valid = require('../test/valid.json');
@@ -14,17 +14,23 @@ describe('Recap Handling', () => {
 
         expect(recap.proofs).toEqual([]);
 
+        recap.addAttenuation('https://example.com', 'crud', 'read');
+        expect(recap.attenuations).toEqual({
+            'https://example.com': { 'crud/read': [{}] },
+        });
+        expect(recap.proofs).toEqual([]);
+
         recap.addAttenuation('kepler:example://default/kv', 'kv', 'read');
         expect(recap.attenuations).toEqual({
-            'https://example.com': { 'crud/read': [] },
-            'kepler:example://default/kv': { 'kv/read': [] }
+            'https://example.com': { 'crud/read': [{}] },
+            'kepler:example://default/kv': { 'kv/read': [{}] }
         });
         expect(recap.proofs).toEqual([]);
 
         recap.addAttenuation('kepler:example://default/kv', 'kv', 'write', { max: 10 });
         expect(recap.attenuations).toEqual({
-            'https://example.com': { 'crud/read': [] },
-            'kepler:example://default/kv': { 'kv/read': [], 'kv/write': [{ max: 10 }] }
+            'https://example.com': { 'crud/read': [{}] },
+            'kepler:example://default/kv': { 'kv/read': [{}], 'kv/write': [{ max: 10 }] }
         });
         expect(recap.proofs).toEqual([]);
 
@@ -37,17 +43,22 @@ describe('Recap Handling', () => {
     test('should decode properly', () => {
         // @ts-ignore
         for (const { message, recap } of Object.values(valid).map(
-            ({ message, recap: { att, prf } }) =>
-            ({
+            // @ts-ignore
+            ({ message, recap: { att, prf } }) => ({
+                // @ts-ignore
                 message: new SiweMessage(message),
+                // @ts-ignore
                 recap: { att, prf: prf.map(CID.decode) }
             }))
         ) {
             let decoded;
+            // @ts-ignore
             expect(() => decoded = Recap.extract_and_verify(message)).not.toThrow();
+            // @ts-ignore
             expect(decoded.attenuations).toEqual(recap.att);
             // @ts-ignore
             let proofs = recap.prf.map(CID.decode);
+            // @ts-ignore
             expect(decoded.proofs).toEqual(proofs);
         }
         // @ts-ignore
@@ -76,18 +87,20 @@ describe('Utils', () => {
         c: 1,
         ca: 3
     };
-    const validStrings = ['crud/read', 'kepler/*', 'https/put'];
-    const invalidStrings = ['crud', 'crud/read/write', 'with a/space', 'with/a space'];
+    const validStrings = ['crud', 'kepler', 'https-proto'];
+    const validAbilityStrings = ['crud/read', 'kepler/*', 'https/put'];
+    const invalidAbilityStrings = ['crud', 'crud/read/write', 'with a/space', 'with/a space'];
 
     test('should test for ordering', () => {
         expect(isSorted(ordered)).toBeTruthy();
         expect(isSorted(unordered)).toBeFalsy();
     })
     test('should test for valid strings', () => {
-        validStrings.forEach((str) => {
+        validStrings.forEach(str => expect(validString(str)).toBeTruthy());
+        validAbilityStrings.forEach((str) => {
             expect(validAbString(str)).toBeTruthy();
         })
-        invalidStrings.forEach((str) => {
+        invalidAbilityStrings.forEach((str) => {
             expect(validAbString(str)).toBeFalsy();
         })
     })

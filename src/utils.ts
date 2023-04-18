@@ -6,8 +6,8 @@ import serialize from 'canonicalize';
 export type PlainJSON = boolean | number | string | { [key: string]: PlainJSON } | Array<PlainJSON>;
 export type AttObj = { [key: string]: { [key: string]: Array<PlainJSON> } };
 
-const stringRegex = /^[a-zA-Z0-9.*_+-]$/g;
-const abilityStringRegex = /^[a-zA-Z0-9.*_+-]\/[a-zA-Z0-9.*_+-]$/g;
+const stringRegex = /^[a-zA-Z0-9.*_+-]+$/g;
+const abilityStringRegex = /^[a-zA-Z0-9.*_+-]+\/[a-zA-Z0-9.*_+-]+$/g;
 
 export const validString = (str: string) =>
     str.match(stringRegex) !== null

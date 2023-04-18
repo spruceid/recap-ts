@@ -10,5 +10,11 @@ module.exports = {
   roots: ['<rootDir>/src'],
   modulePathIgnorePatterns: ['<rootDir>/dist/'],
   modulePaths: [compilerOptions.baseUrl],
-  moduleNameMapper: pathsToModuleNameMapper(compilerOptions.paths /*, { prefix: '<rootDir>/' } */),
+  moduleNameMapper: Object.assign(
+    pathsToModuleNameMapper(compilerOptions.paths, { prefix: '<rootDir>/' }),
+    {
+      '^multiformats(.*)$': '<rootDir>/node_modules/multiformats/dist/index.min.js',
+      '^ethers(.*)$': '<rootDir>/node_modules/ethers/lib/index.js',
+    }
+  )
 };
