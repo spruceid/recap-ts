@@ -12,6 +12,11 @@
     "lint": "eslint --ext .js,.ts .",
     "format": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\""
   },
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/spruceid/recap-ts.git"
+  },
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
