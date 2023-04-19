@@ -21,7 +21,6 @@ export const encodeRecap = (att: AttObj, prf: Array<CID>) => base64url.encoder.b
 })))
 
 export const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => {
-    const { att, prf } = JSON.parse(new TextDecoder().decode(base64url.decode(recap)));
     const { att, prf } = JSON.parse(new TextDecoder().decode(base64url.decoder.baseDecode(recap)));
 
     // check the att is an object
