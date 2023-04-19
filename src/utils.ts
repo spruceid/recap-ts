@@ -15,13 +15,14 @@ export const validString = (str: string) =>
 export const validAbString = (str: string) =>
     str.match(abilityStringRegex) !== null
 
-export const encodeRecap = (att: AttObj, prf: Array<CID>) => base64url.encode(new TextEncoder().encode(serialize({
+export const encodeRecap = (att: AttObj, prf: Array<CID>) => base64url.encoder.baseEncode(new TextEncoder().encode(serialize({
     att: att,
     prf: prf.map(cid => cid.toV1().toString(base58btc.encoder))
 })))
 
 export const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => {
     const { att, prf } = JSON.parse(new TextDecoder().decode(base64url.decode(recap)));
+    const { att, prf } = JSON.parse(new TextDecoder().decode(base64url.decoder.baseDecode(recap)));
 
     // check the att is an object
     if (!(att instanceof Object) || Array.isArray(att)) {
@@ -38,7 +39,7 @@ export const decodeRecap = (recap: string): { att: AttObj, prf: Array<CID> } => 
         throw new Error('Attenuation object is not properly sorted');
     }
 
-    return { att, prf: prf.map((cid: string) => CID.parse(cid)) }
+    return { att, prf: prf.map((cid: string) => CID.parse(cid, base58btc)) }
 }
 
 export const checkAtt = (att: AttObj): att is AttObj => {
