@@ -31,7 +31,7 @@ export class Recap {
     }
 
     get statement(): string {
-        let statement = "I further authorize the stated URI to perform the following actions on my behalf: ";
+        let statement = 'I further authorize the stated URI to perform the following actions on my behalf: ';
 
         let section = 1;
         for (const resource of Object.keys(this.attenuations).sort()) {
@@ -84,6 +84,26 @@ export class Recap {
         }
     }
 
+    merge(other: Recap) {
+        this.#prf.push(...other.proofs.filter(cid => !this.#prf.includes(cid)));
+
+        for (const [resource, abilities] of Object.entries(other.attenuations)) {
+            if (this.#att[resource] !== undefined) {
+                const ex = this.#att[resource];
+                for (const [ability, restrictions] of Object.entries(abilities)) {
+                    if (ex[ability] === undefined || ex[ability].length === 0
+                        || ex[ability].every(r => Object.keys(r).length === 0)) {
+                        ex[ability] = restrictions;
+                    } else {
+                        ex[ability].push(...restrictions);
+                    }
+                }
+            } else {
+                this.#att[resource] = abilities;
+            }
+        }
+    }
+
     static decode_urn(recap: string): Recap {
         if (!recap.startsWith(urnRecapPrefix)) {
             throw new Error('Invalid recap urn');
@@ -110,9 +130,23 @@ export class Recap {
     }
 
     add_to_siwe_message(siwe: SiweMessage): SiweMessage {
-        siwe.statement = siwe.statement === undefined ? this.statement : siwe.statement + " " + this.statement;
-        siwe.resources = siwe.resources === undefined ? [this.encode()] : [...siwe.resources, this.encode()];
-        return siwe
+        try {
+            // try merge with existing recap
+            if (siwe.statement === undefined || siwe.resources === undefined || siwe.resources.length === 0) {
+                throw new Error('no recap')
+            }
+            let other = Recap.extract_and_verify(siwe);
+            let previousStatement = other.statement;
+            other.merge(this);
+            siwe.statement = siwe.statement.slice(0, -previousStatement.length) + other.statement;
+            siwe.resources[siwe.resources.length - 1] = other.encode();
+            return siwe
+        } catch (e) {
+            // no existing recap, just apply it
+            siwe.statement = siwe.statement === undefined ? this.statement : siwe.statement + ' ' + this.statement;
+            siwe.resources = siwe.resources === undefined ? [this.encode()] : [...siwe.resources, this.encode()];
+            return siwe
+        }
     }
 
     encode(): string {
