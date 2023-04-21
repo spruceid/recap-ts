@@ -1,18 +1,18 @@
 {
   "compilerOptions": {
     "target": "es2015",
-    "module": "commonjs",
-    "baseUrl": "./src",
-    "paths": {
-      "multiformats": ["../node_modules/multiformats/dist"]
-    },
+    "module": "ESNext",
+    "moduleResolution": "node16",
+    "lib": ["es2017", "dom"],
+    "baseUrl": ".",
     "declaration": true,
     "outDir": "./dist",
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
+    "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": ["src/*"],
-  "exclude": ["src/**/*.test.ts"]
+  "include": ["src/*", "./package.json"],
+  "exclude": ["src/**/*.test.ts", "node_modules", "dist", "test"]
 }
