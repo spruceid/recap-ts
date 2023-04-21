@@ -1,5 +1,5 @@
 {
-  "name": "recap-ts",
+  "name": "siwe-recap",
   "version": "0.0.1",
   "description": "A Typescript implementation of EIP-5573 utilities",
   "main": "dist/index.js",
