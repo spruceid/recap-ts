@@ -71,11 +71,11 @@ describe("Recap Handling", () => {
     }
     // @ts-ignore
     // TODO: uncomment and fix.
-    // for (const { message } of Object.values(invalid).map(({ message }) => ({
-    //   message: new SiweMessage(message),
-    // }))) {
-    //   expect(() => Recap.extract_and_verify(message)).toThrow();
-    // }
+    for (const { message } of Object.values(invalid).map(({ message }) => ({
+      message: new SiweMessage(message),
+    }))) {
+      expect(() => Recap.extract_and_verify(message)).toThrow();
+    }
   });
 });
 
