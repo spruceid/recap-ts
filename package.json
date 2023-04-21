@@ -1,6 +1,6 @@
 {
   "name": "recap-ts",
-  "version": "0.0.1",
+  "version": "0.0.1-alpha.0",
   "description": "A Typescript implementation of EIP-5573 utilities",
   "main": "dist/src/index.js",
   "typings": "dist/src/index.d.ts",
