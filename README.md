@@ -2,8 +2,6 @@
 
 A Typescript implementation of [ERC-5573 ReCap](https://eips.ethereum.org/EIPS/eip-5573), enabling applications to express [UCAN-style object capabilities](https://github.com/ucan-wg/spec) using [Sign In With Ethereum](https://eips.ethereum.org/EIPS/eip-4361).
 
-This package is still ALPHA software, bugs may exist and APIs may change in future.
-
 ## Installation
 
 ReCap can be installed via `npm`:
@@ -23,7 +21,7 @@ or `package.json` entry:
 ``` json
 {
   "dependencies": {
-    "siwe-recap": "0.1.0"
+    "siwe-recap": "0.0.1-alpha.0"
   }
 }
 ```
@@ -68,3 +66,7 @@ recap.addAttenuation('https://example.com/my/resource', 'crud', 'read');
 // the new change will be merged into the existing recap in `siwe`
 recap.add_to_siwe_messate(siwe);
 ```
+
+## Disclaimer
+
+This package is still ALPHA software, bugs may exist and APIs may change in future. This library for has not yet undergone a formal security audit. We welcome continued feedback on the usability, architecture, and security of this implementation.
