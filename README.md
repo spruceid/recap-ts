@@ -6,19 +6,19 @@ A Typescript implementation of [ERC-5573 ReCap](https://eips.ethereum.org/EIPS/e
 
 ReCap can be installed via `npm`:
 
-``` sh
+```sh
 npm -i siwe-recap
 ```
 
 `yarn`:
 
-``` sh
+```sh
 yarn add siwe-recap
 ```
 
 or `package.json` entry:
 
-``` json
+```json
 {
   "dependencies": {
     "siwe-recap": "0.0.1-alpha.0"
@@ -30,14 +30,16 @@ or `package.json` entry:
 
 ReCaps are designed to be used in conjunction with SIWE. They can be initialized and built as follows:
 
-``` typescript
-import { Recap } from 'siwe-recap';
+```typescript
+import { Recap } from "siwe-recap";
 
 const recap = new Recap();
 
-recap.addAttenuation('https://example.com/my/resource', 'crud', 'read');
-recap.addAttenuation('https://example.com/my/resource', 'crud', 'update', { maxTimes: 5 });
-recap.addProof('bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea');
+recap.addAttenuation("https://example.com/my/resource", "crud", "read");
+recap.addAttenuation("https://example.com/my/resource", "crud", "update", {
+  maxTimes: 5,
+});
+recap.addProof("bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea");
 
 console.log(recap.attenuations);
 // {
@@ -50,7 +52,7 @@ console.log(recap.attenuations);
 
 They can also be applied to or extracted from SIWE messages:
 
-``` typescript
+```typescript
 import { SiweMessage } from 'siwe';
 import { Recap } from 'siwe-recap';
 
@@ -60,7 +62,7 @@ const siwe = new SiweMessage( ... );
 // the recap listed in `siwe`s resource list
 const recap = Recap.extract_and_verify(siwe);
 
-// 
+//
 recap.addAttenuation('https://example.com/my/resource', 'crud', 'read');
 
 // the new change will be merged into the existing recap in `siwe`
