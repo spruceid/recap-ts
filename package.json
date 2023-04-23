@@ -25,6 +25,27 @@
       "require": "./dist/index.cjs"
     }
   },
+  "jest": {
+    "preset": "ts-jest/presets/default-esm",
+		"globals": {
+			"ts-jest": {
+				"useESM": true
+			}
+		},
+		"verbose": true,
+		"testTimeout": 30000,
+		"testMatch": [
+			"**/*.test.[jt]s?(x)"
+		],
+		"moduleFileExtensions": [
+			"js",
+			"json",
+			"ts"
+		],
+		"moduleNameMapper": {
+			"^(\\.{1,2}/.*)\\.js$": "$1"
+		}
+  },
   "devDependencies": {
     "@types/jest": "^29.5.0",
     "@typescript-eslint/eslint-plugin": "^5.23.0",

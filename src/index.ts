@@ -60,6 +60,9 @@ export class Recap {
       }
     }
 
+    // Strip trailing statement at the end.
+    statement = statement.slice(0, -1);
+
     return statement;
   }
 
