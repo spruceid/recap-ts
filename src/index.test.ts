@@ -1,52 +1,52 @@
-import { CID } from "multiformats/cid";
-import { SiweMessage } from "siwe";
+import { CID } from 'multiformats/cid';
+import { SiweMessage } from 'siwe';
 
-import { Recap } from "./index";
-import { validAbString, isSorted, validString } from "./utils";
+import { Recap } from './index';
+import { validAbString, isSorted, validString } from './utils';
 
-const jsonCap = require("../test/serialized_cap.json");
-const valid = require("../test/valid.json");
-const invalid = require("../test/invalid.json");
+const jsonCap = require('../test/serialized_cap.json');
+const valid = require('../test/valid.json');
+const invalid = require('../test/invalid.json');
 
-describe("Recap Handling", () => {
-  test("should build a recap", () => {
+describe('Recap Handling', () => {
+  test('should build a recap', () => {
     const recap = new Recap();
 
     expect(recap.proofs).toEqual([]);
 
-    recap.addAttenuation("https://example.com", "crud", "read");
+    recap.addAttenuation('https://example.com', 'crud', 'read');
     expect(recap.attenuations).toEqual({
-      "https://example.com": { "crud/read": [{}] },
+      'https://example.com': { 'crud/read': [{}] },
     });
     expect(recap.proofs).toEqual([]);
 
-    recap.addAttenuation("kepler:example://default/kv", "kv", "read");
+    recap.addAttenuation('kepler:example://default/kv', 'kv', 'read');
     expect(recap.attenuations).toEqual({
-      "https://example.com": { "crud/read": [{}] },
-      "kepler:example://default/kv": { "kv/read": [{}] },
+      'https://example.com': { 'crud/read': [{}] },
+      'kepler:example://default/kv': { 'kv/read': [{}] },
     });
     expect(recap.proofs).toEqual([]);
 
-    recap.addAttenuation("kepler:example://default/kv", "kv", "write", {
+    recap.addAttenuation('kepler:example://default/kv', 'kv', 'write', {
       max: 10,
     });
     expect(recap.attenuations).toEqual({
-      "https://example.com": { "crud/read": [{}] },
-      "kepler:example://default/kv": {
-        "kv/read": [{}],
-        "kv/write": [{ max: 10 }],
+      'https://example.com': { 'crud/read': [{}] },
+      'kepler:example://default/kv': {
+        'kv/read': [{}],
+        'kv/write': [{ max: 10 }],
       },
     });
     expect(recap.proofs).toEqual([]);
 
     const cidStr =
-      "bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea";
+      'bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea';
     const cid = CID.parse(cidStr);
 
     recap.addProof(cidStr);
     expect(recap.proofs).toEqual([cid]);
   });
-  test("should decode properly", () => {
+  test('should decode properly', () => {
     // @ts-ignore
     for (const { message, recap } of Object.values(valid).map(
       // @ts-ignore
@@ -74,7 +74,7 @@ describe("Recap Handling", () => {
   });
 });
 
-describe("Utils", () => {
+describe('Utils', () => {
   const unordered = {
     c: 1,
     b: 2,
@@ -93,25 +93,25 @@ describe("Utils", () => {
     c: 1,
     ca: 3,
   };
-  const validStrings = ["crud", "kepler", "https-proto"];
-  const validAbilityStrings = ["crud/read", "kepler/*", "https/put"];
+  const validStrings = ['crud', 'kepler', 'https-proto'];
+  const validAbilityStrings = ['crud/read', 'kepler/*', 'https/put'];
   const invalidAbilityStrings = [
-    "crud",
-    "crud/read/write",
-    "with a/space",
-    "with/a space",
+    'crud',
+    'crud/read/write',
+    'with a/space',
+    'with/a space',
   ];
 
-  test("should test for ordering", () => {
+  test('should test for ordering', () => {
     expect(isSorted(ordered)).toBeTruthy();
     expect(isSorted(unordered)).toBeFalsy();
   });
-  test("should test for valid strings", () => {
-    validStrings.forEach((str) => expect(validString(str)).toBeTruthy());
-    validAbilityStrings.forEach((str) => {
+  test('should test for valid strings', () => {
+    validStrings.forEach(str => expect(validString(str)).toBeTruthy());
+    validAbilityStrings.forEach(str => {
       expect(validAbString(str)).toBeTruthy();
     });
-    invalidAbilityStrings.forEach((str) => {
+    invalidAbilityStrings.forEach(str => {
       expect(validAbString(str)).toBeFalsy();
     });
   });

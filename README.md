@@ -31,15 +31,15 @@ or `package.json` entry:
 ReCaps are designed to be used in conjunction with SIWE. They can be initialized and built as follows:
 
 ```typescript
-import { Recap } from "siwe-recap";
+import { Recap } from 'siwe-recap';
 
 const recap = new Recap();
 
-recap.addAttenuation("https://example.com/my/resource", "crud", "read");
-recap.addAttenuation("https://example.com/my/resource", "crud", "update", {
+recap.addAttenuation('https://example.com/my/resource', 'crud', 'read');
+recap.addAttenuation('https://example.com/my/resource', 'crud', 'update', {
   maxTimes: 5,
 });
-recap.addProof("bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea");
+recap.addProof('bagaaierasords4njcts6vs7qvdjfcvgnume4hqohf65zsfguprqphs3icwea');
 
 console.log(recap.attenuations);
 // {

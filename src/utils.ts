@@ -1,7 +1,7 @@
-import { base58btc } from "multiformats/bases/base58";
-import { base64url } from "multiformats/bases/base64";
-import { CID } from "multiformats/cid";
-import serialize from "canonicalize";
+import { base58btc } from 'multiformats/bases/base58';
+import { base64url } from 'multiformats/bases/base64';
+import { CID } from 'multiformats/cid';
+import serialize from 'canonicalize';
 
 export type PlainJSON =
   | boolean
@@ -24,7 +24,7 @@ export const encodeRecap = (att: AttObj, prf: Array<CID>) =>
     new TextEncoder().encode(
       serialize({
         att: att,
-        prf: prf.map((cid) => cid.toV1().toString(base58btc.encoder)),
+        prf: prf.map(cid => cid.toV1().toString(base58btc.encoder)),
       })
     )
   );
@@ -38,20 +38,23 @@ export const decodeRecap = (
 
   // check the att is an object
   if (!(att instanceof Object) || Array.isArray(att)) {
-    throw new Error("Invalid attenuation object");
+    throw new Error('Invalid attenuation object');
   }
   // check the prf is a list
-  if (!Array.isArray(prf) || prf.some((cid) => typeof cid !== "string")) {
-    throw new Error("Invalid proof list");
+  if (!Array.isArray(prf) || prf.some(cid => typeof cid !== 'string')) {
+    throw new Error('Invalid proof list');
   }
 
   checkAtt(att);
 
   if (!isSorted(att)) {
-    throw new Error("Attenuation object is not properly sorted");
+    throw new Error('Attenuation object is not properly sorted');
   }
 
-  return { att, prf: prf.map((cid: string) => CID.parse(cid, base58btc)) };
+  return {
+    att,
+    prf: prf.map((cid: string) => CID.parse(cid, base58btc)),
+  };
 };
 
 export const checkAtt = (att: AttObj): att is AttObj => {
@@ -60,7 +63,7 @@ export const checkAtt = (att: AttObj): att is AttObj => {
   for (const ob of Object.values(att)) {
     // check the att entries are objects
     if (!(ob instanceof Object)) {
-      throw new Error("Invalid attenuation object");
+      throw new Error('Invalid attenuation object');
     }
     for (const [ab, nb] of Object.entries(ob)) {
       // check the ability strings are valid
@@ -70,7 +73,7 @@ export const checkAtt = (att: AttObj): att is AttObj => {
       // check the nota-bene list is a list of objects
       if (
         !Array.isArray(nb) ||
-        nb.some((n) => !(n instanceof Object) || Array.isArray(n))
+        nb.some(n => !(n instanceof Object) || Array.isArray(n))
       ) {
         throw new Error(`Invalid nota-bene list for ${ab}`);
       }

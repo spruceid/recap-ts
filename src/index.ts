@@ -1,4 +1,4 @@
-import { CID } from "multiformats/cid";
+import { CID } from 'multiformats/cid';
 import {
   AttObj,
   PlainJSON,
@@ -6,11 +6,11 @@ import {
   decodeRecap,
   validString,
   checkAtt,
-} from "./utils";
-import { SiweMessage } from "siwe";
+} from './utils';
+import { SiweMessage } from 'siwe';
 
 export { AttObj, PlainJSON, CID };
-const urnRecapPrefix = "urn:recap:";
+const urnRecapPrefix = 'urn:recap:';
 
 export class Recap {
   #prf: Array<CID>;
@@ -19,8 +19,8 @@ export class Recap {
   constructor(att: AttObj = {}, prf: Array<CID> | Array<string> = []) {
     checkAtt(att);
     this.#att = att;
-    this.#prf = prf.map((cid) =>
-      typeof cid === "string" ? CID.parse(cid) : cid
+    this.#prf = prf.map(cid =>
+      typeof cid === 'string' ? CID.parse(cid) : cid
     );
   }
 
@@ -34,14 +34,14 @@ export class Recap {
 
   get statement(): string {
     let statement =
-      "I further authorize the stated URI to perform the following actions on my behalf: ";
+      'I further authorize the stated URI to perform the following actions on my behalf: ';
 
     let section = 1;
     for (const resource of Object.keys(this.attenuations).sort()) {
       const resourceAbilities = Object.keys(this.attenuations[resource])
         .sort()
         .reduce((acc, cur) => {
-          const [namespace, name] = cur.split("/");
+          const [namespace, name] = cur.split('/');
           if (acc[namespace] === undefined) {
             acc[namespace] = [name];
           } else {
@@ -52,8 +52,8 @@ export class Recap {
 
       for (const [namespace, names] of Object.entries(resourceAbilities)) {
         statement += `(${section}) "${namespace}": ${names
-          .map((n) => '"' + n + '"')
-          .join(", ")} for "${resource}". `;
+          .map(n => '"' + n + '"')
+          .join(', ')} for "${resource}". `;
         section += 1;
       }
     }
@@ -62,7 +62,7 @@ export class Recap {
   }
 
   addProof(cid: string | CID) {
-    if (typeof cid === "string") {
+    if (typeof cid === 'string') {
       this.#prf.push(CID.parse(cid));
     } else {
       this.#prf.push(cid);
@@ -71,15 +71,15 @@ export class Recap {
 
   addAttenuation(
     resource: string,
-    namespace: string = "*",
-    name: string = "*",
+    namespace: string = '*',
+    name: string = '*',
     restriction: { [key: string]: PlainJSON } = {}
   ) {
     if (!validString(namespace)) {
-      throw new Error("Invalid ability namespace");
+      throw new Error('Invalid ability namespace');
     }
     if (!validString(name)) {
-      throw new Error("Invalid ability name");
+      throw new Error('Invalid ability name');
     }
 
     const abString = `${namespace}/${name}`;
@@ -97,7 +97,7 @@ export class Recap {
   }
 
   merge(other: Recap) {
-    this.#prf.push(...other.proofs.filter((cid) => !this.#prf.includes(cid)));
+    this.#prf.push(...other.proofs.filter(cid => !this.#prf.includes(cid)));
 
     for (const [resource, abilities] of Object.entries(other.attenuations)) {
       if (this.#att[resource] !== undefined) {
@@ -106,7 +106,7 @@ export class Recap {
           if (
             ex[ability] === undefined ||
             ex[ability].length === 0 ||
-            ex[ability].every((r) => Object.keys(r).length === 0)
+            ex[ability].every(r => Object.keys(r).length === 0)
           ) {
             ex[ability] = restrictions;
           } else {
@@ -121,7 +121,7 @@ export class Recap {
 
   static decode_urn(recap: string): Recap {
     if (!recap.startsWith(urnRecapPrefix)) {
-      throw new Error("Invalid recap urn");
+      throw new Error('Invalid recap urn');
     }
 
     const { att, prf } = decodeRecap(recap.slice(urnRecapPrefix.length));
@@ -130,7 +130,7 @@ export class Recap {
 
   static extract(siwe: SiweMessage): Recap {
     if (siwe.resources === undefined) {
-      throw new Error("No resources in SiweMessage");
+      throw new Error('No resources in SiweMessage');
     }
     let last_index = siwe.resources.length - 1;
     return Recap.decode_urn(siwe.resources[last_index]);
@@ -142,7 +142,7 @@ export class Recap {
       siwe.statement === undefined ||
       !siwe.statement.endsWith(recap.statement)
     ) {
-      throw new Error("Invalid statement");
+      throw new Error('Invalid statement');
     }
     return recap;
   }
@@ -155,7 +155,7 @@ export class Recap {
         siwe.resources === undefined ||
         siwe.resources.length === 0
       ) {
-        throw new Error("no recap");
+        throw new Error('no recap');
       }
       let other = Recap.extract_and_verify(siwe);
       let previousStatement = other.statement;
@@ -169,7 +169,7 @@ export class Recap {
       siwe.statement =
         siwe.statement === undefined
           ? this.statement
-          : siwe.statement + " " + this.statement;
+          : siwe.statement + ' ' + this.statement;
       siwe.resources =
         siwe.resources === undefined
           ? [this.encode()]
