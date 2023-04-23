@@ -9,6 +9,8 @@ import {
 } from './utils';
 import { SiweMessage } from 'siwe';
 
+export * from "./utils";
+
 export { AttObj, PlainJSON, CID };
 const urnRecapPrefix = 'urn:recap:';
 

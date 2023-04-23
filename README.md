@@ -69,6 +69,10 @@ recap.addAttenuation('https://example.com/my/resource', 'crud', 'read');
 recap.add_to_siwe_messate(siwe);
 ```
 
+## Compilation
+
+In order to generate the ECMAScript, CommonJS and TypeScript declaration files, run `yarn compile`.
+
 ## Disclaimer
 
 This package is still ALPHA software, bugs may exist and APIs may change in future. This library for has not yet undergone a formal security audit. We welcome continued feedback on the usability, architecture, and security of this implementation.
