@@ -4,9 +4,8 @@ import { SiweMessage } from 'siwe';
 import { Recap } from './index';
 import { validAbString, isSorted, validString } from './utils';
 
-const jsonCap = require('../test/serialized_cap.json');
-const valid = require('../test/valid.json');
-const invalid = require('../test/invalid.json');
+import valid from '../test/valid.json' assert { type: 'json' };
+import invalid from '../test/invalid.json' assert { type: 'json' };
 
 describe('Recap Handling', () => {
   test('should build a recap', () => {
@@ -68,7 +67,9 @@ describe('Recap Handling', () => {
       expect(decoded.proofs).toEqual(proofs);
     }
     // @ts-ignore
-    for (const { message } of Object.values(invalid)) {
+    for (const { message } of Object.values(invalid).map(({ message }) => ({
+      message: new SiweMessage(message),
+    }))) {
       expect(() => Recap.extract_and_verify(message)).toThrow();
     }
   });

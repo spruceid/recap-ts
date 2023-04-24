@@ -9,6 +9,8 @@ import {
 } from './utils';
 import { SiweMessage } from 'siwe';
 
+export * from './utils';
+
 export { AttObj, PlainJSON, CID };
 const urnRecapPrefix = 'urn:recap:';
 
@@ -57,6 +59,9 @@ export class Recap {
         section += 1;
       }
     }
+
+    // Strip trailing statement at the end.
+    statement = statement.slice(0, -1);
 
     return statement;
   }
