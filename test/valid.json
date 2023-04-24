@@ -34,7 +34,9 @@
           "kv/metadata": [{}],
           "kv/put": [{}]
         },
-        "urn:credential:type:type1": { "credential/present": [{}] }
+        "urn:credential:type:type1": {
+          "credential/present": [{}]
+        }
       },
       "prf": []
     }
@@ -55,7 +57,9 @@
       ]
     },
     "recap": {
-      "att": { "credential:*": { "credential/present": [{}] } },
+      "att": {
+        "credential:*": { "credential/present": [{}] }
+      },
       "prf": []
     }
   }
