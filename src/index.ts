@@ -14,10 +14,19 @@ export * from './utils';
 export { AttObj, PlainJSON, CID };
 const urnRecapPrefix = 'urn:recap:';
 
+/**
+ * Recap class handles the creation, merging, and decoding of ReCap objects
+ */
 export class Recap {
   #prf: Array<CID>;
   #att: AttObj;
 
+  /**
+   * Constructs a Recap instance
+   *
+   * @param att - The input attenuation object (default is an empty object {})
+   * @param prf - The input proof array (default is an empty array [])
+   */
   constructor(att: AttObj = {}, prf: Array<CID> | Array<string> = []) {
     checkAtt(att);
     this.#att = att;
@@ -26,14 +35,29 @@ export class Recap {
     );
   }
 
+  /**
+   * Gets the proofs array of the Recap object
+   *
+   * @returns An Array of CID objects
+   */
   get proofs(): Array<CID> {
     return this.#prf;
   }
 
+   /**
+   * Gets the attenuation object of the Recap object
+   *
+   * @returns An attenuation object (AttObj)
+   */
   get attenuations(): AttObj {
     return this.#att;
   }
 
+  /**
+   * Calculates the statement field of a SIWE recap-transformed-statement
+   *
+   * @returns A string representing the statement constructed from the Recap object
+   */
   get statement(): string {
     let statement =
       'I further authorize the stated URI to perform the following actions on my behalf: ';
@@ -66,6 +90,11 @@ export class Recap {
     return statement;
   }
 
+  /**
+   * Adds a new proof to the proofs collection of the Recap object
+   *
+   * @param cid - A CID (Content Identifier) object or its string representation
+   */
   addProof(cid: string | CID) {
     if (typeof cid === 'string') {
       this.#prf.push(CID.parse(cid));
@@ -74,10 +103,18 @@ export class Recap {
     }
   }
 
+  /**
+   * Adds a new attenuation to the attenuations object of the Recap object
+   *
+   * @param resource - The resource URI
+   * @param namespace - The ability namespace (default is *)
+   * @param name - The ability name (default is *)
+   * @param restriction - A JSON object containing restrictions or requirements for the action (default is {})
+   */
   addAttenuation(
     resource: string,
-    namespace: string = '*',
-    name: string = '*',
+    namespace = '*',
+    name = '*',
     restriction: { [key: string]: PlainJSON } = {}
   ) {
     if (!validString(namespace)) {
@@ -101,6 +138,11 @@ export class Recap {
     }
   }
 
+  /**
+   * Merges another Recap object with the current Recap object
+   *
+   * @param other - The other Recap object to be merged
+   */
   merge(other: Recap) {
     this.#prf.push(...other.proofs.filter(cid => !this.#prf.includes(cid)));
 
@@ -124,6 +166,13 @@ export class Recap {
     }
   }
 
+  /**
+   * Decodes a Recap URI into a Recap object
+   *
+   * @param recap - The input Recap URI string
+   * @returns A Recap object decoded from the input Recap URI
+   * @throws Will throw an error if the input string is not a valid Recap URI
+   */
   static decode_urn(recap: string): Recap {
     if (!recap.startsWith(urnRecapPrefix)) {
       throw new Error('Invalid recap urn');
@@ -133,14 +182,28 @@ export class Recap {
     return new Recap(att, prf);
   }
 
+  /**
+   * Extracts the Recap object from a SiweMessage instance
+   *
+   * @param siwe - A SiweMessage instance
+   * @returns A Recap object extracted from the input SiweMessage
+   * @throws Will throw an error if the SiweMessage doesn't have any resources
+   */
   static extract(siwe: SiweMessage): Recap {
     if (siwe.resources === undefined) {
       throw new Error('No resources in SiweMessage');
     }
-    let last_index = siwe.resources.length - 1;
+    const last_index = siwe.resources.length - 1;
     return Recap.decode_urn(siwe.resources[last_index]);
   }
 
+  /**
+   * Extracts and verifies a Recap object from a SiweMessage instance
+   *
+   * @param siwe - A SiweMessage instance
+   * @returns A verified Recap object extracted from the input SiweMessage
+   * @throws Will throw an error if the SiweMessage has an invalid statement
+   */
   static extract_and_verify(siwe: SiweMessage): Recap {
     const recap = Recap.extract(siwe);
     if (
@@ -152,6 +215,12 @@ export class Recap {
     return recap;
   }
 
+  /**
+   * Adds a Recap object to a SiweMessage
+   *
+   * @param siwe - The input SiweMessage instance to be modified
+   * @returns A modified SiweMessage instance with the Recap object added
+   */
   add_to_siwe_message(siwe: SiweMessage): SiweMessage {
     try {
       // try merge with existing recap
@@ -162,8 +231,8 @@ export class Recap {
       ) {
         throw new Error('no recap');
       }
-      let other = Recap.extract_and_verify(siwe);
-      let previousStatement = other.statement;
+      const other = Recap.extract_and_verify(siwe);
+      const previousStatement = other.statement;
       other.merge(this);
       siwe.statement =
         siwe.statement.slice(0, -previousStatement.length) + other.statement;
@@ -183,6 +252,11 @@ export class Recap {
     }
   }
 
+  /**
+   * Encodes a Recap object into a Recap URI
+   *
+   * @returns A Recap URI string
+   */
   encode(): string {
     return `${urnRecapPrefix}${encodeRecap(this.#att, this.#prf)}`;
   }
