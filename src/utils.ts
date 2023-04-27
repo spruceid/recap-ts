@@ -3,22 +3,56 @@ import { base64url } from 'multiformats/bases/base64';
 import { CID } from 'multiformats/cid';
 import serialize from 'canonicalize';
 
+/**
+ * PlainJSON type definition.
+ * 
+ * @typedef PlainJSON
+ * @type {boolean|number|string|Object.<string, PlainJSON>|Array.<PlainJSON>}
+ */
 export type PlainJSON =
   | boolean
   | number
   | string
   | { [key: string]: PlainJSON }
   | Array<PlainJSON>;
+
+/**
+ * Attenuation object type definition.
+ * 
+ * @typedef AttObj
+ * @type {Object.<string, Object.<string, Array.<PlainJSON>>>}
+ */
 export type AttObj = { [key: string]: { [key: string]: Array<PlainJSON> } };
 
+/** @private */
 const stringRegex = /^[a-zA-Z0-9.*_+-]+$/g;
+/** @private */
 const abilityStringRegex = /^[a-zA-Z0-9.*_+-]+\/[a-zA-Z0-9.*_+-]+$/g;
 
+/**
+ * Check if the input string is a valid string Regex.
+ *
+ * @param {string} str - The input string.
+ * @returns {boolean} - Returns true if the input string is valid, otherwise false.
+ */
 export const validString = (str: string) => str.match(stringRegex) !== null;
 
+/**
+ * Check if the input string is a valid ability string Regex.
+ *
+ * @param {string} str - The input string.
+ * @returns {boolean} - Returns true if the input string is valid, otherwise false.
+ */
 export const validAbString = (str: string) =>
   str.match(abilityStringRegex) !== null;
 
+/**
+ * Encode recap details (an attenuation object and a list of CIDs) into a ReCap URI.
+ *
+ * @param {AttObj} att - The attenuation object.
+ * @param {Array.<CID>} prf - An array of proof CIDs.
+ * @returns {string} - Returns a base64url encoded ReCap URI.
+ */
 export const encodeRecap = (att: AttObj, prf: Array<CID>) =>
   base64url.encoder.baseEncode(
     new TextEncoder().encode(
@@ -29,6 +63,13 @@ export const encodeRecap = (att: AttObj, prf: Array<CID>) =>
     )
   );
 
+/**
+ * Decode a ReCap URI into recap details (an attenuation object and a list of CIDs).
+ *
+ * @param {string} recap - The ReCap URI.
+ * @returns {Object} - An object containing a decoded att property as an attenuation object, and a decoded prf property as an array of CID objects.
+ * @throws {Error} - Throws an error if the ReCap URI is invalid.
+ */
 export const decodeRecap = (
   recap: string
 ): { att: AttObj; prf: Array<CID> } => {
@@ -57,6 +98,13 @@ export const decodeRecap = (
   };
 };
 
+/**
+ * Check if the input attenuation object is valid.
+ *
+ * @param {AttObj} att - The input attenuation object.
+ * @returns {boolean} - Returns true if the input attenuation object is valid, otherwise false.
+ * @throws {Error} - Throws an error if the attenuation object contains invalid entries.
+ */
 export const checkAtt = (att: AttObj): att is AttObj => {
   // TODO ensure the att keys are valid URIs
   // because URIs are so broad, there's no easy/efficient way to do this
@@ -82,6 +130,12 @@ export const checkAtt = (att: AttObj): att is AttObj => {
   return true;
 };
 
+/**
+ * Check if the input object is sorted.
+ *
+ * @param {PlainJSON} obj - The input object.
+ * @returns {boolean} - Returns true if the input object is sorted, otherwise false.
+ */
 export const isSorted = (obj: PlainJSON): boolean => {
   if (Array.isArray(obj)) {
     // its an array
