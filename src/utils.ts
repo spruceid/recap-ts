@@ -47,11 +47,11 @@ export const validAbString = (str: string) =>
   str.match(abilityStringRegex) !== null;
 
 /**
- * Encode recap details (an attenuation object and a list of CIDs) into a ReCap URI.
+ * Encode recap details (an attenuation object and a list of CIDs) into a base64 representation to be append the the Recap URI.
  *
  * @param {AttObj} att - The attenuation object.
  * @param {Array.<CID>} prf - An array of proof CIDs.
- * @returns {string} - Returns a base64url encoded ReCap URI.
+ * @returns {string} - Returns the base64url encoded component of a ReCap URI.
  */
 export const encodeRecap = (att: AttObj, prf: Array<CID>) =>
   base64url.encoder.baseEncode(
@@ -64,9 +64,9 @@ export const encodeRecap = (att: AttObj, prf: Array<CID>) =>
   );
 
 /**
- * Decode a ReCap URI into recap details (an attenuation object and a list of CIDs).
+ * Decode the base64 component of a ReCap URI into recap details (an attenuation object and a list of CIDs).
  *
- * @param {string} recap - The ReCap URI.
+ * @param {string} recap - The base64url encoded component ReCap URI.
  * @returns {Object} - An object containing a decoded att property as an attenuation object, and a decoded prf property as an array of CID objects.
  * @throws {Error} - Throws an error if the ReCap URI is invalid.
  */
