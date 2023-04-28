@@ -65,7 +65,7 @@
   "dependencies": {
     "canonicalize": "^2.0.0",
     "multiformats": "^11.0.2",
-    "siwe": "^2.0.5"
+    "siwe": "^2.1.4"
   },
   "peerDependencies": {
     "ethers": "^5.5.1"
