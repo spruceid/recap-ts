@@ -58,6 +58,7 @@ describe('Recap Handling', () => {
       let decoded: Recap;
       expect(() => (decoded = Recap.extract_and_verify(message))).not.toThrow();
       expect(decoded!.attenuations).toEqual(recap.att);
+      // @ts-ignore
       let proofs = recap.prf.map(CID.decode);
       // @ts-ignore
       expect(decoded.proofs).toEqual(proofs);
