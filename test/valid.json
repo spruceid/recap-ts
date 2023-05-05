@@ -36,7 +36,7 @@
       "statement": "I further authorize the stated URI to perform the following actions on my behalf: (1) 'kv': 'get', 'list', 'metadata' for 'kepler:ens:example.eth://default/kv'. (2) 'kv': 'delete', 'get', 'list', 'metadata', 'put' for 'kepler:ens:example.eth://default/kv/dapp-space'. (3) 'kv': 'delete', 'get', 'list', 'metadata', 'put' for 'kepler:ens:example.eth://default/kv/public'. (4) 'credential': 'present' for 'urn:credential:type:type1'.",
       "uri": "did:key:example",
       "version": "1",
-      "chainId": "1",
+      "chainId": 1,
       "nonce": "mynonce1",
       "issuedAt": "2022-06-21T12:00:00.000Z",
       "resources": [
@@ -78,7 +78,7 @@
       "statement": "Some custom statement. I further authorize the stated URI to perform the following actions on my behalf: (1) 'credential': 'present' for 'credential:*'.",
       "uri": "did:key:example",
       "version": "1",
-      "chainId": "1",
+      "chainId": 1,
       "nonce": "mynonce1",
       "issuedAt": "2022-06-21T12:00:00.000Z",
       "resources": [
