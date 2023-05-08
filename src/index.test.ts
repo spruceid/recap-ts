@@ -50,17 +50,14 @@ describe('Recap Handling', () => {
     for (const { message, recap } of Object.values(valid).map(
       // @ts-ignore
       ({ message, recap: { att, prf } }) => ({
-        // @ts-ignore
         message: new SiweMessage(message),
         // @ts-ignore
         recap: { att, prf: prf.map(CID.decode) },
       })
     )) {
-      let decoded;
-      // @ts-ignore
+      let decoded: Recap;
       expect(() => (decoded = Recap.extract_and_verify(message))).not.toThrow();
-      // @ts-ignore
-      expect(decoded.attenuations).toEqual(recap.att);
+      expect(decoded!.attenuations).toEqual(recap.att);
       // @ts-ignore
       let proofs = recap.prf.map(CID.decode);
       // @ts-ignore

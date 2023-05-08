@@ -77,9 +77,9 @@ export class Recap {
         }, {} as { [key: string]: Array<string> });
 
       for (const [namespace, names] of Object.entries(resourceAbilities)) {
-        statement += `(${section}) "${namespace}": ${names
-          .map(n => '"' + n + '"')
-          .join(', ')} for "${resource}". `;
+        statement += `(${section}) '${namespace}': ${names
+          .map(n => `'${n}'`)
+          .join(', ')} for '${resource}'. `;
         section += 1;
       }
     }
