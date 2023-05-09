@@ -21,7 +21,7 @@ or `package.json` entry:
 ```json
 {
   "dependencies": {
-    "siwe-recap": "0.0.1-alpha.0"
+    "siwe-recap": "0.0.2-alpha.0"
   }
 }
 ```
